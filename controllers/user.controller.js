@@ -14,8 +14,8 @@ const Signup = async (req, res) => {
             return res.status(500).json({ message: err.message, success: false });
         }
         const { username, email, password } = req.body;
-        // const profilePic = req.file.path
-        const profilePic = "file.path";
+        const profilePic = req.file.path
+        // const profilePic = "file.path";
 
         const user = await User.findOne({ email });
 
@@ -46,7 +46,7 @@ const Signup = async (req, res) => {
                 sameSite: "Strict",
             });
 
-            return res.status(201).json({ message: "Signup Successful", success: true });
+            return res.status(201).json({ message: "Signup Successful",token:token ,success: true });
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }

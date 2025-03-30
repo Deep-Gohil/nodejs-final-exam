@@ -3,20 +3,25 @@ const Task = require("../models/task.model");
 const createTask = async (req, res) => {
     try {
         const { title, description } = req.body;
+        const userId = req.user.id; 
+
         if (!title || !description) {
             return res.status(400).json({ message: "Please fill all the fields", success: false });
         }
-        const newTask = await Task.create({title, description})
+
+        const newTask = await Task.create({ title, description, user: userId });
+
         return res.status(201).json({ message: "Task created successfully", task: newTask, success: true });
     } catch (error) {
         return res.status(500).json({ message: "Error creating task", error: error.message, success: false });
     }
 };
 
+
 const getTasks = async (req, res) => {
     try {
-        const {id} = req.params
-        const tasks = await Task.findById(id);
+        const tasks = await Task.find();
+
         return res.status(200).json({ tasks, success: true });
     } catch (error) {
         return res.status(500).json({ message: "Error fetching tasks", error: error.message, success: false });
@@ -53,12 +58,4 @@ const deleteTask = async (req, res) => {
     }
 }
 
-const getAllTasks = async (req, res) => {
-    try {
-        const tasks = await Task.find({});
-        return res.status(200).json({ tasks, success: true });
-    } catch (error) {
-        return res.status(500).json({ message: "Error fetching tasks", error: error.message, success: false });
-    }
-}
-module.exports = { createTask,getAllTasks, getTasks, updateTask, deleteTask };
+module.exports = { createTask, getTasks, updateTask, deleteTask };

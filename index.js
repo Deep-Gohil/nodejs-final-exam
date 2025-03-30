@@ -4,6 +4,7 @@ const userRouter = require("./routes/user.router");
 require("dotenv").config();
 const cors = require("cors");
 const path = require("path");
+const taskRouter = require("./routes/task.router");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(cors());
 
 app.use("/api/users", userRouter);
+app.use("/api/tasks", taskRouter);
 
 app.get("/", (req, res) => {
     res.render("index", { 

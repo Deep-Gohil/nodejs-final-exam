@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup</title>
+    <title>Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,7 @@
             }
         }
 
-        /* Signup Form Styles */
+        /* Login Form Styles */
         .container {
             background: white;
             padding: 20px;
@@ -99,13 +99,11 @@
     </nav>
 
     <div class="container">
-        <h2>Signup</h2>
-        <form id="signup-form" enctype="multipart/form-data">
-            <input type="text" id="username" placeholder="Username" required>
+        <h2>Login</h2>
+        <form id="login-form">
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
-            <input type="file" id="profilePic" accept="image/*">
-            <button type="submit">Signup</button>
+            <button type="submit">Login</button>
         </form>
     </div>
 
@@ -115,35 +113,33 @@
             navLinks.classList.toggle('active');
         }
 
-        document.getElementById('signup-form').addEventListener('submit', async function(event) {
-    event.preventDefault();
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-    const formData = new FormData();
-    formData.append('username', document.getElementById('username').value);
-    formData.append('email', document.getElementById('email').value);
-    formData.append('password', document.getElementById('password').value);
-    formData.append('profilePic', document.getElementById('profilePic').files[0]);
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-    try {
-        const response = await fetch('http://localhost:8090/api/users/signup', {
-            method: 'POST',
-            body: formData,
+            try {
+                const response = await fetch('http://localhost:8090/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    alert('Login Successful');
+                    window.location.href = './index.html';
+                } else {
+                    alert('Login Failed: ' + (data.message || 'Invalid credentials'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error logging in');
+            }
         });
-
-        const data = await response.json();
-        if (data.success) {
-            localStorage.setItem('token', data.token);
-            alert('Signup Successful');
-            window.location.href = 'login.html'; 
-        } else {
-            alert('Signup Failed: ' + (data.message || 'Something went wrong'));
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error signing up');
-    }
-});
-</script>
+    </script>
 
 </body>
 </html>
